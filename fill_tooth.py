@@ -4,7 +4,7 @@ import numpy as np
 import pyvista as pv
 
 # <------------------------------------------------load mesh create circle------------------------------------------>
-tooth_to_fill = pv.read('tooth_11_decimate.stl')
+tooth_to_fill = pv.read('tooth_7_decimate.stl')
 boundary = tooth_to_fill.extract_feature_edges(boundary_edges=True, feature_edges=False, manifold_edges=False)
 plott = pv.Plotter()
 plott.add_mesh(boundary, color='blue')
@@ -17,7 +17,9 @@ c=np.asarray(boundary.points)
 c = c[c[:,1].argsort()]
 point_cloud_c = pv.PolyData(arr_border)
 
-points_boundary=c
+
+
+
 
 
 # pp.add_mesh(point_cloud)
@@ -64,7 +66,7 @@ for i in range(np.asarray(boundary.points).shape[0]):
      stop = points_boundary[i, :]
      start = arr_border[i, :]
      points, ind = tooth_to_fill.ray_trace(start, stop)
-     ray = pv.Line(start, stop, resolution=50)
+     ray = pv.Line(start, stop, resolution=200)
      intersection = pv.PolyData(points)
      tooth_to_fill = tooth_to_fill.merge(ray)
 #
@@ -82,12 +84,22 @@ pcd = o3d.geometry.PointCloud()
 
 full_tooth_arr = np.concatenate((xyz_to_add_c,full_tooth_arr), axis=0)
 pcd.points = o3d.utility.Vector3dVector(full_tooth_arr)
-
-o3d.visualization.draw_geometries([pcd])
+o3d.io.write_point_cloud("pcd.pcd",pcd)
+pcd=o3d.io.read_point_cloud("pcd.pcd")
 pcd.estimate_normals()
-poisson_mesh = o3d.geometry.TriangleMesh.create_from_point_cloud_poisson(pcd, depth=8, width=0, scale=1.1, linear_fit=False)[0]
-bbox = pcd.get_axis_aligned_bounding_box()
-p_mesh_crop = poisson_mesh.crop(bbox)
-o3d.visualization.draw_geometries([p_mesh_crop])
-o3d.io.write_triangle_mesh("tt.ply",p_mesh_crop)
-
+o3d.visualization.draw_geometries([pcd])
+t=pcd.estimate_normals()
+density =0.00002# 0.08
+tengent_plane =100  # 100
+depth_mesh = 8  # 9
+# pcd.orient_normals_consistent_tangent_plane(tengent_plane)
+# normals=np.asarray(pcd.normals)
+# mean_normal=np.mean(normals)
+# p, t = pcd.compute_convex_hull()
+# p.orient_triangles()
+# p.compute_vertex_normals()
+# mesh, densities = o3d.geometry.TriangleMesh.create_from_point_cloud_poisson(pcd, depth=depth_mesh,linear_fit=False,scale=1.0)
+# bbox = pcd.get_axis_aligned_bounding_box()
+# p_mesh_crop = mesh.crop(bbox)
+# o3d.visualization.draw_geometries([p_mesh_crop])
+# o3d.io.write_triangle_mesh("ttt.ply",p_mesh_crop)
