@@ -11,7 +11,7 @@ def display_inlier_outlier(cloud, ind):
 
 #<--------------------------------------------------Load Data----------------------------------------------------->
 tooth = pv.read("tooth_7_decimate.stl")
-
+tooth.rotate_x(180)
 # tooth.plot_curvature(curv_type='Maximum',clim=[0, 15])
 tooth=tooth.elevation()
 # tooth.plot()
@@ -26,7 +26,7 @@ pcd=pv.PolyData(tooth_xyz)
 points_to_remove=[]
 pcd.plot()
 for i in range(tooth_xyz.shape[0]):
-    if (deri_arr[i]>0.4):
+    if (deri_arr[i]>0.5):
         points_to_remove.append([i])
 arr_clean = np.delete(tooth_xyz, points_to_remove, axis=0)
 pcd=pv.PolyData(arr_clean)
