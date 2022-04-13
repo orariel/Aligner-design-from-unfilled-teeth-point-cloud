@@ -7,7 +7,7 @@ def display_inlier_outlier(cloud, ind):
     outlier_cloud = cloud.select_by_index(ind, invert=True)
     return inlier_cloud
 #<-------------------------------------------Load Data-------------------------------------------------------->
-tooth = pv.read("tooth_11_decimate.stl")
+tooth = pv.read("tooth_7_decimate.stl")
 # boundary=tooth.extract_feature_edges(boundary_edges=True, feature_edges=False, manifold_edges=False)
 # boundary = boundary.compute_normals()
 tooth_points=np.asarray(tooth.points)
@@ -72,4 +72,4 @@ plot.add_mesh(tooth)
 plot.add_mesh(arrow,color='red')
 plot.show()
 tooth_and_root=tooth.merge(arrow)
-tooth_and_root.save('tooth_11_root.ply')
+tooth_and_root.save('tooth_7_root.ply')
