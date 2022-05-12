@@ -7,7 +7,10 @@ def display_inlier_outlier(cloud, ind):
     outlier_cloud = cloud.select_by_index(ind, invert=True)
     return inlier_cloud
 #<-------------------------------------------Load Data-------------------------------------------------------->
-tooth = pv.read("tooth_6_decimate.stl")
+tooth = pv.read("full_tooth_2_r_5.stl")
+tooth=tooth.triangulate()
+# tooth=tooth.subdivide(1,subfilter='loop', inplace=False, progress_bar=False)
+tooth.plot()
 tooth_points=np.asarray(tooth.points)
 tooth_normals_b=np.asarray(tooth.point_normals)
 
@@ -17,12 +20,20 @@ deriv = tooth.compute_derivative(gradient=True,divergence=False)
 deri_arr=np.asarray(deriv.active_scalars)
 deri_arr=deri_arr.reshape(deri_arr.size,1)
 points_to_remove=[]
-max_hight=float(deri_arr.max())*0.8
+max_hight=float(deri_arr.max())*0.95
 for i in range(deri_arr.shape[0]):
     if (deri_arr[i]>max_hight):
         points_to_remove.append([i])
 tooth_envlope,rx=tooth.remove_points(points_to_remove)
 tooth_envlope.plot()
+
+#<------------------------------------------SLICING 2 SLICES------------------------------------------------------->
+slice_z, R=tooth_envlope.clip(normal='z', origin=None, invert=True, value=2,return_clipped=True)
+slice_z2,R2=slice_z.clip(normal='z', origin=None, invert=True, value=2+0.5,return_clipped=True)
+R2.plot()
+
+
+
 
 #<-------------------------------------------Clean remains of upper part------------------------------------------------------->
 # cl, ind =pcd_o3d.remove_radius_outlier(nb_points=18, radius=0.55)

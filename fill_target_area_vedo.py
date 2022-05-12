@@ -54,6 +54,8 @@ area_to_fill_e.plot()
 area_to_fill_arr=np.asarray(area_to_fill.points)
 area_to_fill_pcd=pv.PolyData(area_to_fill_arr)
 area_to_fill_pcd.plot()
+
+
 # # point_a=area_to_fill_arr[10,:]
 # # point_b=area_to_fill_arr[60,:]
 # #
